@@ -1,0 +1,69 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+cmake_minimum_required(VERSION 3.25)
+
+project(ArrowMinimalExample)
+
+find_package(Arrow REQUIRED)
+
+include(CMakeDependentOption)
+cmake_dependent_option(ARROW_LINK_SHARED
+                       "Link to the Arrow shared library if possible"
+                       ON
+                       ARROW_BUILD_SHARED
+                       OFF)
+
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 20)
+endif()
+
+# We require a C++20 compliant compiler
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+message(STATUS "Arrow version: ${ARROW_VERSION}")
+message(STATUS "Arrow SO version: ${ARROW_FULL_SO_VERSION}")
+
+add_executable(arrow-example example.cc)
+
+if(ARROW_LINK_SHARED)
+  target_link_libraries(arrow-example PRIVATE Arrow::arrow_shared)
+else()
+  target_link_libraries(arrow-example PRIVATE Arrow::arrow_static)
+endif()
+
+option(ARROW_EXAMPLE_S3_STATIC_CHECK "Verify S3 and static linking" OFF)
+# Check only when Arrow got built with S3 by ArrowOptions.cmake via find_package
+if(ARROW_EXAMPLE_S3_STATIC_CHECK
+   AND ARROW_S3
+   AND TARGET Arrow::arrow_static)
+  find_package(ArrowS3 REQUIRED)
+  if(NOT TARGET ArrowS3::arrow_s3_static)
+    message(FATAL_ERROR "ArrowS3::arrow_s3_static not found")
+  endif()
+  add_executable(arrow-example-s3-static example.cc)
+  target_compile_definitions(arrow-example-s3-static
+                             PRIVATE ARROW_EXAMPLE_S3_STATIC_CHECK)
+  target_link_libraries(arrow-example-s3-static PRIVATE ArrowS3::arrow_s3_static)
+elseif(ARROW_EXAMPLE_S3_STATIC_CHECK)
+  message(STATUS "Skipping arrow-example-s3-static: "
+                 "requires ARROW_S3 and Arrow::arrow_static")
+endif()

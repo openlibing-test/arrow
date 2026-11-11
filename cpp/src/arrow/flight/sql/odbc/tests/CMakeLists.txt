@@ -1,0 +1,98 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+find_package(SQLite3Alt REQUIRED)
+
+set(ARROW_FLIGHT_SQL_MOCK_SERVER_SRCS
+    ../../example/sqlite_sql_info.cc
+    ../../example/sqlite_type_info.cc
+    ../../example/sqlite_statement.cc
+    ../../example/sqlite_statement_batch_reader.cc
+    ../../example/sqlite_server.cc
+    ../../example/sqlite_tables_schema_batch_reader.cc)
+
+set(ARROW_FLIGHT_SQL_ODBC_TEST_SRCS
+    odbc_test_suite.cc
+    odbc_test_suite.h
+    columns_test.cc
+    connection_attr_test.cc
+    connection_info_test.cc
+    connection_test.cc
+    errors_test.cc
+    get_functions_test.cc
+    statement_attr_test.cc
+    statement_driver_api_test.cc
+    statement_test.cc
+    tables_test.cc
+    type_info_test.cc
+    # Enable Protobuf cleanup after test execution
+    # GH-46889: move protobuf_test_util to a more common location
+    ../../../../engine/substrait/protobuf_test_util.cc)
+
+# On macOS, link `ODBCINST` first to ensure iodbc takes precedence over unixodbc.
+set(ARROW_FLIGHT_SQL_ODBC_TEST_LIBS ${ODBCINST} ${ODBC_LIBRARIES} ${SQLite3_LIBRARIES})
+
+# STATIC_LINK_LIBS replaces add_arrow_test's default Arrow test libraries, while
+# EXTRA_LINK_LIBS supplements them.
+if(WIN32 AND ARROW_FLIGHT_TEST_LINKAGE STREQUAL "shared")
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_MODE EXTRA_LINK_LIBS)
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_LIBS arrow_odbc_spi_impl
+                                           ${ARROW_FLIGHT_SQL_ODBC_TEST_LIBS})
+elseif(WIN32)
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_MODE STATIC_LINK_LIBS)
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_LIBS
+      arrow_odbc_spi_impl ${ARROW_FLIGHT_SQL_ODBC_TEST_LIBS} arrow_flight_sql_odbc_static
+      ${ARROW_TEST_STATIC_LINK_LIBS})
+elseif(APPLE)
+  # GH-49651: Link the ODBC driver dynamically on macOS.
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_MODE STATIC_LINK_LIBS)
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_LIBS
+      ${ARROW_FLIGHT_SQL_ODBC_TEST_LIBS} arrow_flight_sql_odbc_shared
+      ${ARROW_TEST_SHARED_LINK_LIBS})
+else()
+  # GH-49651: Link the ODBC driver statically on Linux to avoid a segfault.
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_MODE STATIC_LINK_LIBS)
+  set(ARROW_FLIGHT_SQL_ODBC_TEST_LINK_LIBS
+      ${ARROW_FLIGHT_SQL_ODBC_TEST_LIBS}
+      arrow_flight_sql_odbc_static
+      ${ARROW_TEST_STATIC_LINK_LIBS}
+      arrow_odbc_spi_impl
+      ${ARROW_PROTOBUF_LIBPROTOBUF})
+endif()
+
+add_arrow_test(flight_sql_odbc_test
+               SOURCES
+               ${ARROW_FLIGHT_SQL_ODBC_TEST_SRCS}
+               ${ARROW_FLIGHT_SQL_MOCK_SERVER_SRCS}
+               DEFINITIONS
+               UNICODE
+               ${ARROW_FLIGHT_SQL_ODBC_TEST_LINK_MODE}
+               ${ARROW_FLIGHT_SQL_ODBC_TEST_LINK_LIBS})
+
+find_package(ODBC REQUIRED)
+target_link_libraries(arrow-flight-sql-odbc-test PRIVATE ODBC::ODBC)
+
+if(WIN32)
+  # GH-49538: Dynamically pass the filename of the driver DLL so PinDriverModule
+  # in odbc_test_suite.cc can hold a handle to it.
+  target_compile_definitions(arrow-flight-sql-odbc-test
+                             PRIVATE "ARROW_FLIGHT_SQL_ODBC_DLL_FILE_NAME=L\"$<TARGET_FILE_NAME:arrow_flight_sql_odbc_shared>\""
+  )
+endif()
+
+# Disable unity build due to sqlite_sql_info.cc conflict with sql.h and sqlext.h headers.
+set_target_properties(arrow-flight-sql-odbc-test PROPERTIES UNITY_BUILD OFF)

@@ -1,0 +1,80 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+ARG repo
+ARG arch
+ARG arch_short
+FROM --platform=linux/${arch} ${repo}:${arch_short}-conda-cpp
+
+# We need to synchronize the following values with the values in .env
+# and services.conda-integration in compose.yaml.
+ARG maven=3.9.9
+ARG node=20
+ARG yarn=1.22
+ARG jdk=17
+
+# Install Archery and integration dependencies
+# jpype1 is installed here rather than with pip in integration_arrow.sh, as
+# PyPI may not yet have wheels for the Python version selected by conda
+# and building jpype1 from source requires Apache Ant.
+COPY ci/conda_env_archery.txt /arrow/ci/
+
+RUN mamba install -q -y \
+        --file arrow/ci/conda_env_archery.txt \
+        numpy \
+        compilers \
+        go-cgo \
+        jpype1 \
+        maven=${maven} \
+        nodejs=${node} \
+        yarn=${yarn} \
+        openjdk=${jdk} \
+        ruby \
+        zstd && \
+    mamba clean --yes --all --force-pkgs-dirs
+
+# Install Rust with only the needed components
+# (rustfmt is needed for tonic-build to compile the protobuf definitions)
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --profile=minimal -y && \
+    $HOME/.cargo/bin/rustup component add rustfmt
+
+ENV DOTNET_ROOT=/opt/dotnet \
+    PATH=/opt/dotnet:$PATH
+RUN curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin -Channel 8.0 -InstallDir /opt/dotnet
+
+ENV ARROW_ACERO=OFF \
+    ARROW_AZURE=OFF \
+    ARROW_BUILD_INTEGRATION=ON \
+    ARROW_BUILD_STATIC=OFF \
+    ARROW_BUILD_TESTS=OFF \
+    ARROW_COMPUTE=OFF \
+    ARROW_CSV=OFF \
+    ARROW_DATASET=OFF \
+    ARROW_FILESYSTEM=OFF \
+    ARROW_FLIGHT=ON \
+    ARROW_FLIGHT_SQL=ON \
+    ARROW_GANDIVA=OFF \
+    ARROW_GCS=OFF \
+    ARROW_HDFS=OFF \
+    ARROW_JEMALLOC=OFF \
+    ARROW_JSON=OFF \
+    ARROW_ORC=OFF \
+    ARROW_PARQUET=OFF \
+    ARROW_S3=OFF \
+    ARROW_SUBSTRAIT=OFF \
+    ARROW_USE_GLOG=OFF \
+    CMAKE_UNITY_BUILD=ON

@@ -1,0 +1,73 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+github:
+  description: "Apache Arrow is the universal columnar format and multi-language toolbox for fast data interchange and in-memory analytics"
+  homepage: https://arrow.apache.org/
+  labels:
+    - arrow
+    - parquet
+
+  features:
+    issues: true
+    projects: true
+    discussions: true
+
+  protected_branches:
+    # protect main against force push
+    main: {}
+
+  collaborators:
+    - alinaliBQ
+    - AntoinePrv
+    - EnricoMi
+    - hiroyuki-sato
+    - HyukjinKwon
+    - Reranko05
+    - rustyconover
+
+  copilot_code_review:
+    enabled: true
+    review_drafts: false
+    review_on_push: true
+
+  pull_requests:
+    # Limit the number of concurrently open pull requests a contributor
+    # without write access can have. Pull requests over the cap can't be
+    # opened; draft pull requests count towards the cap. See
+    # https://arrow.apache.org/docs/dev/developers/bug_reports.html#pr-limit
+    creation_cap:
+      enabled: true
+      max_open_pull_requests: 3
+      include_drafts: true
+      bypass_users:
+        - alinaliBQ
+        - AntoinePrv
+        - EnricoMi
+        - hiroyuki-sato
+        - HyukjinKwon
+        - pearu
+        - Reranko05
+        - rustyconover
+
+notifications:
+  commits:      commits@arrow.apache.org
+  issues_status: issues@arrow.apache.org
+  issues:       github@arrow.apache.org
+  pullrequests: github@arrow.apache.org
+  discussions: user@arrow.apache.org
+  jira_options: link label worklog
