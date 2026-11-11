@@ -17,17 +17,20 @@
 
 name: Check Labels Reusable
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   workflow_call:
+#     inputs:
+#       parent-workflow:
+#         description: "The parent workflow filename (without .yml)"
+#         required: true
+#         type: string
+#     outputs:
+#       ci-extra-labels:
+#         description: "The extra CI labels"
+#         value: ${{ jobs.check-labels.outputs.ci-extra-labels }}
 on:
-  workflow_call:
-    inputs:
-      parent-workflow:
-        description: "The parent workflow filename (without .yml)"
-        required: true
-        type: string
-    outputs:
-      ci-extra-labels:
-        description: "The extra CI labels"
-        value: ${{ jobs.check-labels.outputs.ci-extra-labels }}
+  workflow_dispatch:
 
 permissions:
   contents: read

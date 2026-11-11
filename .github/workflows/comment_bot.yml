@@ -17,12 +17,15 @@
 
 name: Comment Bot
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   # TODO(kszucs): support pull_request_review_comment
+#   issue_comment:
+#     types:
+#       - created
+#       - edited
 on:
-  # TODO(kszucs): support pull_request_review_comment
-  issue_comment:
-    types:
-      - created
-      - edited
+  workflow_dispatch:
 
 permissions:
   contents: read

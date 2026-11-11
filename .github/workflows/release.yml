@@ -17,11 +17,14 @@
 
 name: Release
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     tags:
+#       - "apache-arrow-*"
+#       - "!apache-arrow-*-rc*"
 on:
-  push:
-    tags:
-      - "apache-arrow-*"
-      - "!apache-arrow-*-rc*"
+  workflow_dispatch:
 
 permissions:
   contents: write

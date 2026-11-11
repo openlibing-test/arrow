@@ -17,42 +17,45 @@
 
 name: C GLib & Ruby
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     tags:
+#       - '**'
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/ruby.yml'
+#       - 'ci/docker/**'
+#       - 'ci/scripts/c_glib_*'
+#       - 'ci/scripts/ccache_setup.sh'
+#       - 'ci/scripts/cpp_*'
+#       - 'ci/scripts/msys2_*'
+#       - 'ci/scripts/ruby_*'
+#       - 'ci/scripts/util_*'
+#       - 'c_glib/**'
+#       - 'cpp/**'
+#       - 'compose.yaml'
+#       - 'ruby/**'
+#   pull_request:
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/ruby.yml'
+#       - 'ci/docker/**'
+#       - 'ci/scripts/c_glib_*'
+#       - 'ci/scripts/ccache_setup.sh'
+#       - 'ci/scripts/cpp_*'
+#       - 'ci/scripts/msys2_*'
+#       - 'ci/scripts/ruby_*'
+#       - 'ci/scripts/util_*'
+#       - 'c_glib/**'
+#       - 'cpp/**'
+#       - 'compose.yaml'
+#       - 'ruby/**'
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    tags:
-      - '**'
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/ruby.yml'
-      - 'ci/docker/**'
-      - 'ci/scripts/c_glib_*'
-      - 'ci/scripts/ccache_setup.sh'
-      - 'ci/scripts/cpp_*'
-      - 'ci/scripts/msys2_*'
-      - 'ci/scripts/ruby_*'
-      - 'ci/scripts/util_*'
-      - 'c_glib/**'
-      - 'cpp/**'
-      - 'compose.yaml'
-      - 'ruby/**'
-  pull_request:
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/ruby.yml'
-      - 'ci/docker/**'
-      - 'ci/scripts/c_glib_*'
-      - 'ci/scripts/ccache_setup.sh'
-      - 'ci/scripts/cpp_*'
-      - 'ci/scripts/msys2_*'
-      - 'ci/scripts/ruby_*'
-      - 'ci/scripts/util_*'
-      - 'c_glib/**'
-      - 'cpp/**'
-      - 'compose.yaml'
-      - 'ruby/**'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

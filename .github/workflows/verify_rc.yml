@@ -17,13 +17,21 @@
 
 name: Verify RC
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     tags:
+#       - "*-rc*"
+#   pull_request:
+#     paths:
+#       - ".github/workflows/verify_rc.yml"
+#   workflow_dispatch:
+#     inputs:
+#       rc_tag:
+#         description: "Tag of the rc to verify"
+#         type: string
+#         required: true
 on:
-  push:
-    tags:
-      - "*-rc*"
-  pull_request:
-    paths:
-      - ".github/workflows/verify_rc.yml"
   workflow_dispatch:
     inputs:
       rc_tag:

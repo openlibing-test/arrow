@@ -17,26 +17,29 @@
 
 name: CUDA Extra
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     paths:
+#       - '**/*cuda*'
+#       - '**/*gpu*'
+#     tags:
+#       - '**'
+#   pull_request:
+#     # This trigger ensures that the `check_labels` workflow runs on manual label changes
+#     types:
+#       - labeled
+#       - opened
+#       - reopened
+#       - synchronize
+#   schedule:
+#     - cron: |
+#         0 6 * * *
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    paths:
-      - '**/*cuda*'
-      - '**/*gpu*'
-    tags:
-      - '**'
-  pull_request:
-    # This trigger ensures that the `check_labels` workflow runs on manual label changes
-    types:
-      - labeled
-      - opened
-      - reopened
-      - synchronize
-  schedule:
-    - cron: |
-        0 6 * * *
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

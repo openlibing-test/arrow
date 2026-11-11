@@ -17,30 +17,33 @@
 
 name: Python
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     tags:
+#       - '**'
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/python.yml'
+#       - 'ci/**'
+#       - 'cpp/**'
+#       - 'compose.yaml'
+#       - 'docs/source/python/**'
+#       - 'python/**'
+#   pull_request:
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/python.yml'
+#       - 'ci/**'
+#       - 'cpp/**'
+#       - 'compose.yaml'
+#       - 'docs/source/python/**'
+#       - 'python/**'
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    tags:
-      - '**'
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/python.yml'
-      - 'ci/**'
-      - 'cpp/**'
-      - 'compose.yaml'
-      - 'docs/source/python/**'
-      - 'python/**'
-  pull_request:
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/python.yml'
-      - 'ci/**'
-      - 'cpp/**'
-      - 'compose.yaml'
-      - 'docs/source/python/**'
-      - 'python/**'
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

@@ -17,38 +17,41 @@
 
 name: R Extra
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/check_labels.yml'
+#       - '.github/workflows/r_extra.yml'
+#       - '.github/workflows/report_ci.yml'
+#       - 'ci/docker/**'
+#       - 'ci/etc/rprofile'
+#       - 'ci/scripts/PKGBUILD'
+#       - 'ci/scripts/cpp_*.sh'
+#       - 'ci/scripts/install_minio.sh'
+#       - 'ci/scripts/r_*.sh'
+#       - 'cpp/**'
+#       - 'compose.yaml'
+#       - 'dev/archery/archery/**'
+#       - 'r/**'
+#     tags:
+#       - '**'
+#   pull_request:
+#     # This trigger ensures that the `check_labels` workflow runs on manual label changes
+#     types:
+#       - labeled
+#       - opened
+#       - reopened
+#       - synchronize
+#   schedule:
+#     - cron: |
+#         0 4 * * *
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/check_labels.yml'
-      - '.github/workflows/r_extra.yml'
-      - '.github/workflows/report_ci.yml'
-      - 'ci/docker/**'
-      - 'ci/etc/rprofile'
-      - 'ci/scripts/PKGBUILD'
-      - 'ci/scripts/cpp_*.sh'
-      - 'ci/scripts/install_minio.sh'
-      - 'ci/scripts/r_*.sh'
-      - 'cpp/**'
-      - 'compose.yaml'
-      - 'dev/archery/archery/**'
-      - 'r/**'
-    tags:
-      - '**'
-  pull_request:
-    # This trigger ensures that the `check_labels` workflow runs on manual label changes
-    types:
-      - labeled
-      - opened
-      - reopened
-      - synchronize
-  schedule:
-    - cron: |
-        0 4 * * *
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

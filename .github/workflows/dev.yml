@@ -17,15 +17,18 @@
 
 name: Dev
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   # always trigger except Dependabot "push"
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     tags:
+#       - '**'
+#   pull_request:
 on:
-  # always trigger except Dependabot "push"
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    tags:
-      - '**'
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

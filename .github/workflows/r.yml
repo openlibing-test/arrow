@@ -17,38 +17,41 @@
 
 name: R
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     tags:
+#       - '**'
+#     paths:
+#       - '.dockerignore'
+#       - ".github/workflows/r.yml"
+#       - "ci/docker/**"
+#       - "ci/etc/rprofile"
+#       - "ci/scripts/PKGBUILD"
+#       - "ci/scripts/cpp_*.sh"
+#       - "ci/scripts/install_minio.sh"
+#       - "ci/scripts/r_*.sh"
+#       - "cpp/**"
+#       - "compose.yaml"
+#       - "r/**"
+#   pull_request:
+#     paths:
+#       - '.dockerignore'
+#       - ".github/workflows/r.yml"
+#       - "ci/docker/**"
+#       - "ci/etc/rprofile"
+#       - "ci/scripts/PKGBUILD"
+#       - "ci/scripts/cpp_*.sh"
+#       - "ci/scripts/install_minio.sh"
+#       - "ci/scripts/r_*.sh"
+#       - "cpp/**"
+#       - "compose.yaml"
+#       - "r/**"
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    tags:
-      - '**'
-    paths:
-      - '.dockerignore'
-      - ".github/workflows/r.yml"
-      - "ci/docker/**"
-      - "ci/etc/rprofile"
-      - "ci/scripts/PKGBUILD"
-      - "ci/scripts/cpp_*.sh"
-      - "ci/scripts/install_minio.sh"
-      - "ci/scripts/r_*.sh"
-      - "cpp/**"
-      - "compose.yaml"
-      - "r/**"
-  pull_request:
-    paths:
-      - '.dockerignore'
-      - ".github/workflows/r.yml"
-      - "ci/docker/**"
-      - "ci/etc/rprofile"
-      - "ci/scripts/PKGBUILD"
-      - "ci/scripts/cpp_*.sh"
-      - "ci/scripts/install_minio.sh"
-      - "ci/scripts/r_*.sh"
-      - "cpp/**"
-      - "compose.yaml"
-      - "r/**"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

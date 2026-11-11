@@ -17,10 +17,19 @@
 
 name: Package Apache Arrow Flight SQL ODBC Driver
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     tags:
+#       - "apache-arrow-*-rc*"
+#   workflow_dispatch:
+#     inputs:
+#       odbc_release_step:
+#         description: 'ODBC MSI release step'
+#         required: false
+#         default: false
+#         type: boolean
 on:
-  push:
-    tags:
-      - "apache-arrow-*-rc*"
   workflow_dispatch:
     inputs:
       odbc_release_step:

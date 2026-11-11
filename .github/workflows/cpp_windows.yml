@@ -17,21 +17,24 @@
 
 name: C++ Windows MSVC Reusable
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   workflow_call:
+#     inputs:
+#       arch:
+#         description: "The architecture to build for"
+#         required: true
+#         type: string
+#       os:
+#         description: "The runner label to run the job on"
+#         required: true
+#         type: string
+#       simd-level:
+#         description: "The Arrow SIMD level to build with"
+#         required: true
+#         type: string
 on:
-  workflow_call:
-    inputs:
-      arch:
-        description: "The architecture to build for"
-        required: true
-        type: string
-      os:
-        description: "The runner label to run the job on"
-        required: true
-        type: string
-      simd-level:
-        description: "The Arrow SIMD level to build with"
-        required: true
-        type: string
+  workflow_dispatch:
 
 permissions:
   actions: read

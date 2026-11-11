@@ -20,6 +20,22 @@ name: Upload R Nightly builds
 # to nightlies.apache.org. Due to authorization requirements, this upload can't be done
 # from the crossbow repository.
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       prefix:
+#         description: Job prefix to use.
+#         required: false
+#         default: ''
+#       keep:
+#         description: Number of versions to keep.
+#         required: false
+#         default: 14
+# 
+#   schedule:
+#     #Crossbow packaging runs at 0 8 * * *
+#     - cron: '0 18 * * *'
 on:
   workflow_dispatch:
     inputs:
@@ -31,10 +47,6 @@ on:
         description: Number of versions to keep.
         required: false
         default: 14
-
-  schedule:
-    #Crossbow packaging runs at 0 8 * * *
-    - cron: '0 18 * * *'
 
 permissions:
   contents: read

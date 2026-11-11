@@ -17,35 +17,38 @@
 
 name: Package Linux
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#       - '!release-*'
+#     paths:
+#       - '.github/workflows/check_labels.yml'
+#       - '.github/workflows/package_linux.yml'
+#       - '.github/workflows/report_ci.yml'
+#       - 'cpp/**'
+#       - 'c_glib/**'
+#       - 'dev/archery/archery/**'
+#       - 'dev/release/binary-task.rb'
+#       - 'dev/release/verify-apt.sh'
+#       - 'dev/release/verify-yum.sh'
+#       - 'dev/tasks/linux-packages/**'
+#       - 'format/Flight.proto'
+#     tags:
+#       - "apache-arrow-*-rc*"
+#   pull_request:
+#     # This trigger ensures that the `check_labels` workflow runs on manual label changes
+#     types:
+#       - labeled
+#       - opened
+#       - reopened
+#       - synchronize
+#   schedule:
+#     - cron: "0 2 * * *"
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-      - '!release-*'
-    paths:
-      - '.github/workflows/check_labels.yml'
-      - '.github/workflows/package_linux.yml'
-      - '.github/workflows/report_ci.yml'
-      - 'cpp/**'
-      - 'c_glib/**'
-      - 'dev/archery/archery/**'
-      - 'dev/release/binary-task.rb'
-      - 'dev/release/verify-apt.sh'
-      - 'dev/release/verify-yum.sh'
-      - 'dev/tasks/linux-packages/**'
-      - 'format/Flight.proto'
-    tags:
-      - "apache-arrow-*-rc*"
-  pull_request:
-    # This trigger ensures that the `check_labels` workflow runs on manual label changes
-    types:
-      - labeled
-      - opened
-      - reopened
-      - synchronize
-  schedule:
-    - cron: "0 2 * * *"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.repository }}-${{ github.head_ref || github.sha }}-${{ github.workflow }}

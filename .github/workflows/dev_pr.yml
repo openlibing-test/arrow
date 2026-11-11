@@ -17,17 +17,20 @@
 
 name: Dev PR
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   # TODO: Enable this when eps1lon/actions-label-merge-conflict is available.
+#   # push:
+#   #   branches:
+#   #     - master
+#   #     - main
+#   pull_request_target:
+#     types:
+#       - opened
+#       - edited
+#       - synchronize
 on:
-  # TODO: Enable this when eps1lon/actions-label-merge-conflict is available.
-  # push:
-  #   branches:
-  #     - master
-  #     - main
-  pull_request_target:
-    types:
-      - opened
-      - edited
-      - synchronize
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.repository }}-${{ github.event.number }}

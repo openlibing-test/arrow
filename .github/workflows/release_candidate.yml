@@ -17,22 +17,25 @@
 
 name: RC
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     tags:
+#       - "apache-arrow-*-rc*"
+#     paths:
+#       - ".github/workflows/release_candidate.yml"
+#       - "dev/release/utils-create-release-tarball.sh"
+#       - "dev/release/utils-generate-checksum.sh"
+#   pull_request:
+#     paths:
+#       - ".github/workflows/release_candidate.yml"
+#       - "dev/release/utils-create-release-tarball.sh"
+#       - "dev/release/utils-generate-checksum.sh"
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    tags:
-      - "apache-arrow-*-rc*"
-    paths:
-      - ".github/workflows/release_candidate.yml"
-      - "dev/release/utils-create-release-tarball.sh"
-      - "dev/release/utils-generate-checksum.sh"
-  pull_request:
-    paths:
-      - ".github/workflows/release_candidate.yml"
-      - "dev/release/utils-create-release-tarball.sh"
-      - "dev/release/utils-generate-checksum.sh"
+  workflow_dispatch:
 
 permissions:
   contents: write

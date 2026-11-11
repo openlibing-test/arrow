@@ -17,19 +17,22 @@
 
 name: Docs
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   pull_request:
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/docs_light.yml'
+#       - 'ci/docker/conda.dockerfile'
+#       - 'ci/docker/conda-cpp.dockerfile'
+#       - 'ci/docker/conda-python.dockerfile'
+#       - 'ci/scripts/cpp_build.sh'
+#       - 'ci/scripts/python_build.sh'
+#       - 'compose.yaml'
+#       - 'cpp/apidoc/**'
+#       - 'docs/**'
 on:
-  pull_request:
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/docs_light.yml'
-      - 'ci/docker/conda.dockerfile'
-      - 'ci/docker/conda-cpp.dockerfile'
-      - 'ci/docker/conda-python.dockerfile'
-      - 'ci/scripts/cpp_build.sh'
-      - 'ci/scripts/python_build.sh'
-      - 'compose.yaml'
-      - 'cpp/apidoc/**'
-      - 'docs/**'
+  workflow_dispatch:
 
 permissions:
   contents: read

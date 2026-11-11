@@ -17,13 +17,16 @@
 
 name: Report CI results
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   workflow_call:
+#     secrets:
+#       ARROW_SMTP_PASSWORD:
+#         required: true
+#       ARROW_ZULIP_WEBHOOK:
+#         required: true
 on:
-  workflow_call:
-    secrets:
-      ARROW_SMTP_PASSWORD:
-        required: true
-      ARROW_ZULIP_WEBHOOK:
-        required: true
+  workflow_dispatch:
 
 permissions:
   actions: read

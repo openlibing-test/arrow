@@ -16,9 +16,12 @@
 # under the License.
 
 name: "Close stale PRs"
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   schedule:
+#     - cron: "10 11 * * *" # Run daily at 11:10 UTC
+#   workflow_dispatch:
 on:
-  schedule:
-    - cron: "10 11 * * *" # Run daily at 11:10 UTC
   workflow_dispatch:
 
 jobs:

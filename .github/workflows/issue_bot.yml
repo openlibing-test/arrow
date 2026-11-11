@@ -17,10 +17,13 @@
 
 name: Issue Bot
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   issues:
+#     types:
+#       - opened
 on:
-  issues:
-    types:
-      - opened
+  workflow_dispatch:
 
 permissions:
   contents: read

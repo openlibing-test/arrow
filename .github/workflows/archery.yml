@@ -17,26 +17,29 @@
 
 name: Archery & Crossbow
 
+# Original triggers preserved; manual-only for test cost control.
+# on:
+#   push:
+#     branches:
+#       - '**'
+#       - '!dependabot/**'
+#     tags:
+#       - '**'
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/archery.yml'
+#       - 'dev/archery/**'
+#       - 'dev/tasks/**'
+#       - 'compose.yaml'
+#   pull_request:
+#     paths:
+#       - '.dockerignore'
+#       - '.github/workflows/archery.yml'
+#       - 'dev/archery/**'
+#       - 'dev/tasks/**'
+#       - 'compose.yaml'
 on:
-  push:
-    branches:
-      - '**'
-      - '!dependabot/**'
-    tags:
-      - '**'
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/archery.yml'
-      - 'dev/archery/**'
-      - 'dev/tasks/**'
-      - 'compose.yaml'
-  pull_request:
-    paths:
-      - '.dockerignore'
-      - '.github/workflows/archery.yml'
-      - 'dev/archery/**'
-      - 'dev/tasks/**'
-      - 'compose.yaml'
+  workflow_dispatch:
 
 env:
   ARCHERY_DEBUG: 1
