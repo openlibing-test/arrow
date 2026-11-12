@@ -36,16 +36,13 @@ jobs:
           cache-dependency-path: java-source/**/pom.xml
       - name: Configure documented Maven plugin
         run: python3 .github/spotbugs/prepare.py
-      - name: Compile as documented
+      - name: Compile and scan in one Maven reactor with explicit plugin coordinates
         working-directory: java-source
         run: |
           set -o pipefail
-          mvn -B -ntp clean package -DskipTests 2>&1 | tee ../target/verification/compile.log
-      - name: Scan as documented
-        working-directory: java-source
-        run: |
-          set -o pipefail
-          mvn -B -ntp spotbugs:spotbugs 2>&1 | tee ../target/verification/scan.log
+          mvn -B -ntp clean package com.github.spotbugs:spotbugs-maven-plugin:4.9.8.3:spotbugs \
+            -DskipTests -Dspotbugs.threshold=Low -Dspotbugs.maxHeap=2048 \
+            2>&1 | tee ../target/verification/compile-and-scan.log
       - name: Collect and validate module SARIF reports
         run: python3 .github/spotbugs/reports.py
       - name: Checkout private uploader (temporary)
