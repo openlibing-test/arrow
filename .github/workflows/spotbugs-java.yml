@@ -1,0 +1,72 @@
+name: SpotBugs Arrow Java documentation verification
+on:
+  workflow_dispatch:
+  push:
+    branches: [validation/spotbugs-docs]
+    paths: [.github/workflows/spotbugs-java.yml, '.github/spotbugs/**']
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  maven-verification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Record current Arrow applicability
+        run: |
+          mkdir -p target/verification
+          git rev-parse HEAD > target/verification/arrow-workflow-commit.txt
+          test ! -f pom.xml
+          test ! -d java
+          echo 'Current arrow snapshot has no Java tree or root pom.xml; Java implementation is apache/arrow-java.' | tee target/verification/applicability.txt
+      - uses: actions/checkout@v4
+        with:
+          repository: apache/arrow-java
+          ref: 1c571606649af3065d3352a8499d7ab811ac9670
+          path: java-source
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: java-source/**/pom.xml
+      - name: Configure documented Maven plugin
+        run: python3 .github/spotbugs/prepare.py
+      - name: Compile as documented
+        working-directory: java-source
+        run: |
+          set -o pipefail
+          mvn -B -ntp clean package -DskipTests 2>&1 | tee ../target/verification/compile.log
+      - name: Scan as documented
+        working-directory: java-source
+        run: |
+          set -o pipefail
+          mvn -B -ntp spotbugs:spotbugs 2>&1 | tee ../target/verification/scan.log
+      - name: Collect and validate module SARIF reports
+        run: python3 .github/spotbugs/reports.py
+      - name: Checkout private uploader (temporary)
+        uses: actions/checkout@v4
+        with:
+          repository: openlibing-test/upload-sarif-action
+          ref: 0fd322c74908e464f6df593b0a914f66fc287482
+          token: ${{ secrets.PRIVATE_ACTIONS_READ_TOKEN }}
+          path: .private-actions/upload-sarif-action
+          persist-credentials: false
+      - name: Upload module SARIF to openLiBing
+        uses: ./.private-actions/upload-sarif-action
+        with:
+          sarif_file: target/verification/reports
+          source_path: .
+      - name: Verify uploaded snippets
+        run: python3 .github/spotbugs/reports.py --after-upload
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arrow-spotbugs-verification
+          path: target/verification
+          if-no-files-found: error
